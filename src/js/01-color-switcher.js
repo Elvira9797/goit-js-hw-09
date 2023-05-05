@@ -4,14 +4,16 @@ const refs = {
 };
 
 let timerId = null;
-let disabled = false;
+let isActive = false;
 
 refs.startBtn.addEventListener('click', onStartBtnClick);
 refs.stopBtn.addEventListener('click', onStopBtnClick);
 
 function onStartBtnClick() {
-  if (disabled) return;
-  disabled = true;
+  btnStatus(refs.startBtn, refs.stopBtn);
+
+  if (isActive) return;
+  isActive = true;
 
   timerId = setInterval(() => {
     document.body.style.backgroundColor = getRandomHexColor();
@@ -19,8 +21,14 @@ function onStartBtnClick() {
 }
 
 function onStopBtnClick() {
-  disabled = false;
+  btnStatus(refs.stopBtn, refs.startBtn);
+  isActive = false;
   clearInterval(timerId);
+}
+
+function btnStatus(activeBtn, inactiveBtn) {
+  activeBtn.disabled = true;
+  inactiveBtn.disabled = false;
 }
 
 function getRandomHexColor() {
