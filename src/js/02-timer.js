@@ -22,7 +22,7 @@ flatpickr('#datetime-picker', {
   onClose(selectedDates) {
     if (isActive) return;
 
-    const timeDifference = toGetTimeDifferent(selectedDates[0]);
+    const timeDifference = toGetTimeDifferent(selectedDates[0].getTime());
     if (timeDifference <= 0) {
       Notiflix.Notify.failure('Please choose a date in the future', {
         timeout: 2000,
@@ -36,7 +36,7 @@ flatpickr('#datetime-picker', {
       refs.startBtn.disabled = true;
 
       timer = setInterval(() => {
-        const timeDifference = toGetTimeDifferent(selectedDates[0]);
+        const timeDifference = toGetTimeDifferent(selectedDates[0].getTime());
         const time = convertMs(timeDifference);
         attachToElement(time);
       }, 1000);
@@ -45,7 +45,7 @@ flatpickr('#datetime-picker', {
 });
 
 function toGetTimeDifferent(selectedDate) {
-  const now = new Date();
+  const now = new Date().getTime();
   return selectedDate - now;
 }
 
