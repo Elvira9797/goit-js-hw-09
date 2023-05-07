@@ -1,5 +1,5 @@
-import flatpickr from 'flatpickr';
 import Notiflix from 'notiflix';
+import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const refs = {
@@ -12,7 +12,14 @@ const refs = {
 
 let timer = null;
 let isActive = false;
+let selectedDate = 0;
 refs.startBtn.disabled = true;
+
+refs.startBtn.addEventListener('click', () => {
+  isActive = true;
+  refs.startBtn.disabled = true;
+  timer = setInterval(handleTime, 1000);
+});
 
 flatpickr('#datetime-picker', {
   enableTime: true,
@@ -22,7 +29,9 @@ flatpickr('#datetime-picker', {
   onClose(selectedDates) {
     if (isActive) return;
 
-    const timeDifference = toGetTimeDifferent(selectedDates[0].getTime());
+    selectedDate = selectedDates[0].getTime();
+    const timeDifference = toGetTimeDifferent(selectedDate);
+
     if (timeDifference <= 0) {
       Notiflix.Notify.failure('Please choose a date in the future', {
         timeout: 2000,
@@ -31,18 +40,14 @@ flatpickr('#datetime-picker', {
     }
 
     refs.startBtn.disabled = false;
-    refs.startBtn.addEventListener('click', () => {
-      isActive = true;
-      refs.startBtn.disabled = true;
-
-      timer = setInterval(() => {
-        const timeDifference = toGetTimeDifferent(selectedDates[0].getTime());
-        const time = convertMs(timeDifference);
-        attachToElement(time);
-      }, 1000);
-    });
   },
 });
+
+function handleTime() {
+  const timeDifference = toGetTimeDifferent(selectedDate);
+  const time = convertMs(timeDifference);
+  attachToElement(time);
+}
 
 function toGetTimeDifferent(selectedDate) {
   const now = new Date().getTime();
